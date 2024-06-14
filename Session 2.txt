@@ -1,0 +1,439 @@
+order of execution 
+================
+
+
+select source_of_joining From students order by enrollement_date;
+select distinct source_of_joining From students order by enrollement_date;
+
+
+
+Aggregate function :
+
+count is aggregate function bcoz it give the Exact count.
+
+select count(*) from students;
+
+select count(distinct source_of_joining) from students;
+
+select count(distinct source_of_joining) as num_companies from students;
+
+select count(distinct location) from students;
+
+
+select batch_date from student;
+
+
+
+select count(*) from students where batch_date like '%-03-%';
+
+
+
+group by :
+
+
+
+select source_of_joining,count(*) from students group by source_of_joining ;
+
+
+select batch_date,selected_course,count(*) from studs group by batch_date,selected_course;
+
+MIN MAX
+========
+
+select MIN(year_of_exp) from students;
+
+
+
+
+select source_of_joining,sum(year_of_exp) from students group by source_of_joining;
+
+
+select source_of_joining ,min(year_of_exp) from students group by source_of_joining;
+
+
+Average 
+=======
+
+
+select source_of_joining ,avg(year_of_exp) from students group by source_of_joining;
+
+select location ,avg(year_of_exp) from students group by location;
+
+
+
+logical operators 
+
+==================
+
+
+select * from where student where location ='pune';
+ 
+
+select * from where student where location !='pune'
+
+
+select * from courses;
+
+// get all the courses which has the word'data'
+
+
+select * from courses where cou
+
+select * from courses where course_name like '%Data%';
+
+
+select * from courses where course_name not like '%Data%';
+
+// display location who have joined linked less than 8 years of exp
+
+select * from students where year_of_exp < 8 and source_of_joining='google' and location='BAnglore';
+
+
+
+
+select * from students where 
+
+select * from students where year_of_exp <8;
+
+select * from students where year_of_exp < 8 or year_of_exp >12; 
+
+
+select * from students where year+of_exp between 8 and 12;
+
+
+
+ // get list of the students who are working flipart
+
+
+
+select * from students where source_of_joining in ('google','wipro','cognizant');
+
+
+// people who has done diploma and master 
+
+this is example CASE AND END
+
+select course_id,course_name,course_fee,
+CASE
+WHEN course_duration_months > 4 THEN 'masters'
+Else'diploma'
+END as course_type
+from courses;
+
+
+
+//people working for company were want to say product based and all other service based
+
+
+
+select student_id ,student_fname, student_mname, source_of_joining,
+CASE 
+WHEN source_of_joining in ('google','wipro') then 'product based' else'service based'
+end as company_type from students;
+
+
+Joins
+========================================================================================
+
+select course_name from courses where course_id = (select selected_course from stud where student_fname='mayur');
+
+
+// this query is join 
+
+
+select stud.student_fname, stud.student_lname,course_name from stud join courses on stud.selected_course = courses.course_id;
+
+// by default is inner joining 
+
+
+inner join is displayed when the match is given 
+
+
+// Left outer Join
+==============================================================================
+
+delete from courses where course_id = 2;
+
+1)user cannot delete the course id Because the foreign key constraints is declare foreign key.
+2)all the matching records from the left and right table are considered 
+3) all the non matching records in the left table which does not any match will be displayed as null in the right table.
+this is the left join 
+
+//right outer Join 
+==============================================================================
+
+1)all the matching from the left and right will be displayed 
+2)all the non matching records in the right table which does not any match will be displayed as null in left table .. using join
+
+
+//creation of duplicate table with 'as'
+ 
+================================================================================
+create table student_latest as select * from stud;
+
+create  table courses_latest as select * from courses;
+
+create  table courses_latest as select * from courses;
+
+
+select student_latest.student_fname, student_latest.student_lname,course_name from student_latest join courses_latest on student_latest.selected_course = courses_latest.course_id;
+
+
+
+// performing left outer join 
+select student_latest.student_fname, student_latest.student_lname,course_name from student_latest left join courses_latest on student_latest.selected_course = courses_latest.course_id;
+
+
+ // insert query
+
+insert into student_latest(student_id,student_fname,student_lname,student_mname,student_email,student_phone,student_alternate_phone,enrollment_date,selected_course,year_of_exp,source_of_joining,batch_date,location)values(1,'shruti','ruikar','rahul','shrutiruikar@gmail.com',29381920,121323,13-04-2013,3,6,'wipro',14-3-2004,'banglore');
+
+// delete the single column in the complete table
+
+ alter table student_latest drop column enrollment_date;
+
+
+// performing right outer joing
+=======================================
+select student_latest.student_fname,student_latest.student_lname,student_latest.student_mname,course_name from student_latest right join courses_latest on student_latest.selected_course=courses_latest.course_id;
+
+
+
+
+FULL OUTER JOIN
+=======================================================
+
+ALL THE MATCHING RECORDS FROM LEFT AND RIGHT RECORDS
+
+
+select student_latest.student_fname, student_latest.student_lname,course_name from student_latest left join courses_latest on student_latest.selected_course = courses_latest.course_id 
+UNION 
+select student_latest.student_fname,student_latest.student_lname,course_name from student_latest right join courses_latest on student_latest.selected_course=courses_latest.course_id;
+
+select student_latest.student_fname, student_latest.student_lname,course_name from student_latest left join courses_latest on student_latest.selected_course = courses_latest.course_id
+    -> UNION
+    -> select student_latest.student_fname,student_latest.student_lname,course_name from student_latest right join courses_latest on student_latest.selected_course=courses_latest.course_id;
++---------------+---------------+--------------+
+| student_fname | student_lname | course_name  |
++---------------+---------------+--------------+
+| mayur         | mogre         | Data Science |
+| ashish        | mmadan        | NULL         |
+| shruti        | ruikar        | Data Science |
+| NULL          | NULL          | software     |
+| NULL          | NULL          | Deveops      |
++---------------+---------------+--------------+
+5 rows in set (0.01 sec)
+
+
+
+cross join 
+
+====================================================================
+
+select count(*) from studs;
+
+select * from student,course;
+
+1)cross join is command where the match will be found in form 4* 7.
+2) and the match will be displayed in the for of all will join all.
+3)each column form the left join will be joining the right.
+
+
+===========================================================================================
+
+what is difference between where vs having in sql
+
+select source_of_joining,count(*) as total from students group by source_of_joining;
+
+
+
+
+HAving command
+==========================================================================================
+
+
+select source_of_joining,count(*) as total from students  group by source_of_joining havinh total > 1;
+
+
+insert into students(
+student_fname,student_lname,student_mname,student_email,student_phone,student_alternate_phone,enrollment_date,year_of_exp,source_of_joining,batch_date,location) values('gokul','mogre','sewag','sewag@gmail.com','892392301','16738','2013-5-16',6,'amazon','10-3-2024','nargar');
+
+
+
+insert into students(student_fname,student_lname,student_mname,student_email,student_phone,student_alternate_phone,enrollment_date,year_of_exp,source_of_joining,batch_date,location) values('gok','mogre','sewag','sewag@gmail.com','892392301','16738','2013-5-16',6,'amazon','10-3-2024','nargar'),('nandni','takur','sachin','nandini@gmail.com','36290302','27283','2013-7-20',2,'wipro','19-2-2022','pune')
+
+
+//where clause is used to filter the individual records before aggregration
+
+
+select source_joining,count(*) as total from students group by source_of_joining having total > 1;
+
+
+
+// wirte the query for wipro in student table and fin the count of people joined from wipro
+
+ 
+select source_of_joining,count(*) as total from students group by source_of_joining having source_of_joining ='wipro';
+
+
+
+select source_of_joining,count(*) as total from students where source_of_joining ='wipro'  group by source_of_joining;
+
+
+select location,count(*) from students where location='pune' group by location;
+
+
+//  write a queary where location and more tha
+
+
+select location,count(*) as total from students where year_of_exp < 5 group by location having total > 0;
+
+
+select location,count(*) as total from students where year_of_exp > 2 group by location having total >2;
+
+
+// important 
+
+where is used before group by and filter the individual records
+
+having command is used after group by and do filtering on aggregated records
+
+we can use where and  having in the same query also 
+
+where is more used than having
+
+
+// clause
+
+create table employee(firstname varchar(20),lastname(20),age int, salary int ,location varchar(20));
+
+insert into employee values('rohit','sharma',22,100,'pune');
+
+insert into employee values('sachin','tendulkar',30,200,'banglore');
+
+insert into employee values('shikar','dhawan',29,300,'nagar');
+
+insert into employee values('amoir','khan',50,400,'mumbai');
+
+insert into employee values('sharuk','deva',40,500,'delhi');
+
+
+select location,count(location),avg(salary), from employee group by location;
+
+
+select location,count(location) as total,avg(salary) as avg from employee group by location;
+
+
+// wirte a query the first name lastneame total_Count , avg_salary USING JOIN 
+
++-----------+-----------+----------+-------------+------------+
+| firstname | lastname  | location | total_count | avg_salary |
++-----------+-----------+----------+-------------+------------+
+| rohit     | sharma    | pune     |           1 |   100.0000 |
+| sachin    | tendulkar | banglore |           1 |   200.0000 |
+| shikar    | dhawan    | nagar    |           1 |   300.0000 |
+| amoir     | khan      | mumbai   |           1 |   400.0000 |
+| sharuk    | deva      | delhi    |           1 |   500.0000 |
++-----------+-----------+----------+-------------+------------+
+
+query:-
+
+select firstname,lastname,employee.location,total_count,avg_salary from employee join(Select location,count(location)as total_count,avg(Salary) as avg_salary from employee group by location)temptable on employee.location =temptable.location;
+
+
+//we can use over partition by to achieve this easily IS BY USING OVER(PARTITION ) FUNCTION
+
+select firstname,lastname,location,count(location) OVER(PARTITION BY LOCATION)AS TOTAL,
+avg(salary) OVER (PARTITION BY LOCATION)AS AVERAGE FROM EMPLOYEE;
+
+
+// ROW NUMBERS FUNCTION 
+
+question .1) find the first higest salary 
+
+SELECT firstname,lastname,salary,row_number() over(order by salary desc)from employee;
+
+
+// find the 5 the highest salary
+
+
+select * from (SELECT firstname,lastname,salary,row_number() over(order by salary desc) as row num from employee) temptable where rownum =5;
+
+
+-- the problem statement is to assing row number for partition as rownumber by location 
+
+select firstname,lastname,salary,row_number() over (partition by location by salary desc) from employee;
+
+
+
+// question .1) find the first highest salary getting at each location using row number 
+
+
+select * from (select firstname,lastname,location,salary,row_number() over (partition by location order by salary desc)as rownum from employee) temptable where rownum= 1;
+
+
+when we use row_number 
+
+we should be using the orderby clause
+
+we can also use the partition by -- but it optional 
+
+the row_number start from 1 for every partition
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
